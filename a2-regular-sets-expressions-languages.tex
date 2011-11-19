@@ -1,0 +1,251 @@
+\documentclass[10pt,a4paper,final]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\author{Dennis Ideler}
+\title{MATH/COSC 4P61: Theory of Computation\\Assignment 2}
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item % Q1
+Prove or disprove the following identities for regular expressions.
+  \begin{enumerate}
+  \item $r + s = s + r$\\
+  \\
+  $r + s$ is the union\footnote{The union in regular expressions can be written as R1 $+$ R2, R1 $|$ R2,
+  or R1 $\bigcup$ R2.} of regular expressions $r$ and $s$. Union is commutative, order does not
+  matter. Therefore $r + s = \{r\} \bigcup \{s\} = \{r,s\} = \{s,r\} = \{s\} \bigcup \{r\} = s + r$.
+  
+  \item $(r + s)^* = r^* + s^*$\\
+  \\
+  $(r + s)^*$ is the set of strings over $\{r,s\}$ including the empty string ($\epsilon$).\\
+  $r^* + s^*$ is the set of strings of zero or more $r_s$, or zero or more $s_s$.\\
+  So the second regular expression will never contain a string such as $srs$ although the first
+  regular expression will. Therefore $(r + s)^* \neq r^* + s^*$.
+  \end{enumerate}
+
+\item % Q2 -- TODO: insert DFAs
+Find DFAs (draw their state transition diagrams) that accept the following languages:
+  \begin{enumerate}
+  \item The set of strings over $\{a,b,c\}$ that do not contain the substring $aa$.\\
+  \emph{See appendix for diagram}.
+
+  \item The set of strings over $\{a,b,c\}$ that begin with $a$, contain exactly two $b$'s,
+  and end with $cc$.\\
+  \emph{See appendix for diagram}.
+
+  \item The set of strings over $\{a,b,c\}$ in which every $b$ is immediately followed by at least
+  once $c$.\\
+  \emph{See appendix for diagram}.
+
+  \item $(ab)^*ba = (a \cdot b)^* \cdot b \cdot a$\\
+  \emph{See appendix for diagram}.
+
+  \item $(ab)^* (ba) = (a \cdot b)^* \cdot (b \cdot a)$\\
+  \emph{See appendix for diagram}.
+
+  \item $(ab^*a)^* = (a \cdot b^* \cdot a)^*$\\
+  \emph{See appendix for diagram}.
+  \end{enumerate}
+
+\item % Q3
+For any fixed $n$, is $\bigcup_i^n L_i$ regular, where each $L_i$ is regular?\\
+\\
+The union of two regular languages is regular\footnote{However, the union of infinitely many regular languages is not necessarily regular.}.
+This is supported by a theorem that states
+``For any regular languages $L_1$ and $L_2$, language $L_1 \bigcup L_2$ is regular.\cite{sipser}"
+Since $n$ is fixed, we have $L_i \bigcup L_{i+1} \bigcup \cdots \bigcup L_{n-1} \bigcup L_n$
+Recursively, we can define $L_n$ as $L_n = L_{n-1} \cdot L$. So recursively it breaks down to the
+union of two regular languages, which is regular.
+Therefore $\bigcup_i^n L_i$ is regular if $L_i$ is regular.
+
+% You can create regex that is the union of every word in the (finite) language.
+
+\item % Q4
+For each of the following languages, give the state diagram of an NFA (without $\epsilon$-moves)
+that accepts the language. Also convert the first NFA to a DFA using the standard (powerset
+construction) algorithm.
+
+  % TODO: insert NFA
+  
+  \begin{enumerate}
+  \item $(ab)^* \bigcup a^* = (a \cdot b)^* + a^*$ = 0 or more $ab$'s or 0 or more $a$'s.\\
+  \\
+  For an NFA $M$, there exists a DFA $M'$ such that $L(M) = L(M')$.
+  \begin{eqnarray*}
+    M &=& (Q, \Sigma, \delta, q_0, F)\\
+    Q &=& \{q_0,q_1,q_2,q_3\}\\
+    \Sigma &=& \{a,b\}\\
+    F &=& \{q_0,q_2,q_3\}\\
+    \begin{tabular}{c|c|c|}
+    $\delta$ & $a$ & $b$ \\ 
+    \hline 
+    $q_0$ & $\{q_1,q_3\}$ & $\emptyset$ \\
+    \hline 
+    $q_1$ & $\emptyset$ & $\{q_2\}$ \\ 
+    \hline 
+    $q_2$ & $\{q_1\}$ & $\emptyset$ \\ 
+    \hline 
+    $q_3$ & $\{q_3\}$ & $\emptyset$ \\ 
+    \hline 
+    \end{tabular} 
+  \end{eqnarray*}
+  \emph{See appendix for NFA}.\\
+
+  Each state in $M'$ corresponds to a subset of states from $M$.
+  \begin{eqnarray*}
+   M' &=& (Q', \Sigma, \delta', q_0', F')\\
+   Q' &=& 2^Q = \{\emptyset, [q_3], [q_2], [q_2,q_3], [q_1], [q_1,q_3],[q_1,q_2],[q_1,q_2,q_3],[q_0],\\
+   & & [q_0,q_3], [q_0,q_2], [q_0,q_2,q_3], [q_0,q_1], [q_0,q_1,q_3],
+   [q_0,q_1,q_2], [q_0,q_1,q_2,q_3]\}\\
+   F' &=& \mbox{all elements in $2^Q$ that contain a state in $F$}\\
+   &=& \{[q_3], [q_2], [q_2,q_3], [q_1,q_3], [q_1,q_2], [q_1,q_2,q_3], [q_0], [q_0,q_3], [q_0,q_2],\\
+   & & [q_0,q_2,q_3], [q_0,q_1], [q_0,q_1,q_3], [q_0,q_1,q_2], [q_0,q_1,q_2,q_3]\}
+  \end{eqnarray*}
+  
+  Now the most important part, the transition function.
+  To complete this part, we look at the NFA state transitions.
+  For example, $\delta'([q_0],a) = [q_1,q_3]$ because $\delta(q_0, a) = \{q_1,q_3\}$.
+  \begin{eqnarray*}
+  \delta'([q_0],a) &=& [q_1,q_3] \mbox{ ...new state!}\\
+  \delta'([q_0],b) &=& \emptyset\\
+  \delta'([q_1,q_3],a) &=& [q_3] \mbox{ ...new state!}\\
+  \delta'([q_1,q_3],b) &=& [q_2] \mbox{ ...new state!}\\
+  \delta'([q_3],a) &=& [q_3]\\
+  \delta'([q_3],b) &=& \emptyset\\
+  \delta'([q_2],a) &=& [q_1] \mbox{ ...new state!}\\
+  \delta'([q_2],b) &=& \emptyset\\
+  \delta'([q_1],a) &=& \emptyset\\
+  \delta'([q_1],b) &=& [q_2]\\
+  \end{eqnarray*}
+  
+  For an NFA with $n$ states, the DFA could have up to $2^n$ states.
+  In our case, the DFA will have 5 states (instead of 16).\\
+  
+  \emph{See appendix for DFA}.\\
+  
+  \item $(abc)^* a^* = (a \cdot b \cdot c)^* \cdot a^* = $ 0 or more $abc$'s
+  followed by 0 or more $a$'s.
+  \end{enumerate}
+  
+\item % Q5
+Give examples of languages $L_1$ and $L_2$ over alphabet $\{a,b\}$ that satisfy\footnote{Hints:
+Known regular languages: $\Sigma^*, \epsilon, a^*, a^* b^*,$ etc.
+Known nonregular languages: $a^n b^n$ or languages with similar dependencies.}:
+  \begin{enumerate}
+  \item $L_1$ is regular, $L_2$ is nonregular, and $L_1 \bigcup L_2$ is regular.\\
+  $L_1 = \{a,b\}^*,\, L_2 = \{a^n b^n | n \geq 0\} \rightarrow L_1 \bigcup L_2 = a^* b^*$ is regular.
+  
+  \item $L_1$ is regular, $L_2$ is nonregular, and $L_1 \bigcup L_2$ is nonregular.\\
+  $L_1 = \{a^*\},\, L_2 = \{a^n b^n | n \geq 0\} \rightarrow L_1 \bigcup L_2$ is nonregular.
+  
+  \item $L_1$ is regular, $L_2$ is nonregular, and $L_1 \bigcap L_2$ is regular.\\
+  $L_1 = \{a^*\},\, L_2 = \{a^n b^n | n \geq 0\} \rightarrow L_1 \bigcap L_2 = a^*$ is regular.
+  
+  \item $L_1$ is nonregular, $L_2$ is nonregular, and $L_1 \bigcup L_2$ is regular.\\
+  $L_1 = \{a^n | n > 0$ and $n$ is prime$\},\, L_2 = \{a^n | n > 0$ and $n$ is not prime$\}$
+  $\rightarrow L_1 \bigcup L_2 = a^+$ is regular.
+  \end{enumerate}
+
+\item % Q6
+Prove or disprove the following:
+  \begin{enumerate}
+  \item If $L^*$ is regular, then $L$ must be regular.\\
+  \\
+  False. For example, $L = \{a^{2^i} | i \geq 0\}$ is nonregular, but $L^*$ is.
+% Kleene closure ($L^* = \bigcup_{i=0}^\infty L_i$)
+% Positive closure ($L^+ = \bigcup_{i=1}^\infty L_i = L \cdot L^*$).
+  
+  \item For any language $L$, $L^*$ must be regular
+  (discuss both cases when $L$ is finite and infinite).\\
+  \\
+  If $L$ is finite, then it must be regular (you can find a FSM or regex).
+  And if $L$ is regular $\Rightarrow L^*$ is regular, because
+  the Kleene star/closure is a regular operation under closure properties.
+  Therefore, if $L$ is finite, $L^*$ must be regular.\\
+  However, if $L$ is infinite, then it is nonregular because you would need an
+  infinite number of states (you cannot find a FSM or regex).
+  Therefore, if $L$ is infinite, $L^*$ can be regular or nonregular (i.e. it does not say anything).
+  \end{enumerate}
+  
+\item % Q7
+Show that each of the following languages is not regular\footnote{There are 3 ways to show
+a language is nonregular: (1) Pumping lemma, (2) DFA that would require infinite states, or (3)
+Closure properties that relate to other nonregular languages.}:
+  \begin{enumerate}
+  \item $\{a^i b^j | i > j\}$\\
+  \\
+  Proof by contradiction (using pumping lemma):\\
+  Step 1: Assume $L$ is regular, then let $n$ be the constant in the lemma.\\
+  \\
+  Step 2: Select a specific string $z \in L$ such that $|z| \geq n$.\\
+  $z = a^{n+1} b^n$\\
+  \\
+  Step 3: Split $z$ into $uvw$.\\
+  By the lemma, $|uv| \leq n$, thus $v$ appears within the first $n$ characters
+  ($v$ consists only of $a$'s).
+  $z = uvw = a^q a^r a^s b^n$ where $u = a^q, v = a^r$, and $a^s b^n = w$.\\
+  From the lemma we know:\\
+  $q+r+s = n+1$\\
+  $0 \leq |q| < n$\\
+  $1 \leq |r| \leq n$ because $|v| \geq 1$\\
+  $0 \leq |s|$\\
+  $q+s < n + 1$\\
+  \\
+  Step 4: Find an $i$ such that $uv^iw \notin L$, violating the necessary condition.\\
+  The lemma states that for $L$ to be regular, $uv^iw \in L$.\\
+  If $i=0$, then $uv^0w = uw = a^q + a^s < n+1 \notin L$ (because there must be more $a$'s than $b$'s,
+  and if one $a$ is missing, then it's false). Therefore $uw \notin L$ and $L$ is nonregular.  
+  
+  \item The set of strings over $\{0,1\}$ with an equal number of $0$'s and $1$'s.\\
+  $L = \{w | w \in \{0,1\}^*$ and \# of $0$'s $=$ \# of $1$'s in $w\}$\\
+  \\
+  Intuition says we would need infinite states and thus a DFA would be impossible to build.
+  Try pumping lemma.\\
+  \\
+  Select $z = 0^n 1^n \in L = uvw \in L$\\
+  $|uv| \leq n$ so $v$ consists of $0$'s. $u = 0^q,\,v=0^r,\,w=0^s1^n$.\\
+  We know $q+r+s = n$ and $n \geq |v| \geq 1$, so $q+s < n$.\\
+  Lemma says $uv^iw \in L$ if regular. But for $i=0$, we have too few $0$'s in our string, since
+  $uv^0w = uw = 0^q 0^s 1^n \notin L$ because $q+s < n$. Therefore $L$ is not regular.
+  
+  \item $\{a^i b^j c^{2j} | i \geq 0, j \geq 0\}$\\
+  \\
+  Select $z = a^n b^n c^{2n} \in L = uvw$.\\
+  $|uv| \leq n$ so $v$ consists of $a$'s.\\
+  $u = a^q, v = a^r, w = a^s b^n c^{2n}$.\\
+  $q + r + s = n$\\
+  Find an $i$ such $uv^iw \notin L$.\\
+  $i = n+1 \rightarrow uv^{n+1}w = q + (n+1)r + s + n + 2n = q + r +s + n + 2n + nr = n + n + 2n + nr$\\
+  Which is not in $L$ because then there would be more $a$'s than $c$'s. Thus $L$ is not regular.  
+  
+  \item The set of nonpalindromes over $\{a,b\}$.\\
+  \\
+  If $L$ is regular, then so is $\stackrel{-}{L}$ (the set of palindromes).\\
+  $\stackrel{-}{L} = \{w\,|\,w \in \{a,b\}^*, w = w^R\}$. Use pumping lemma.\\
+  Select $z = a^n b a^n = uvw$. $u = a^i, v=a^j, w=a^k b a^n$.\\
+  $i+j+k=n$\\
+  $i+k < n$\\
+  $|uv| \leq n$\\
+  $i + j \leq n$, so $n \geq j \geq 1$.\\
+  Pump $v$ 0 times ($i=0$), we get $a^{i+k}b a^n \notin L$.\\
+  Therefore $\stackrel{-}{L}$ is not regular and thus neither is $L$.
+  \end{enumerate}
+\end{enumerate}
+
+\begin{thebibliography}{}
+\bibitem{sipser}
+  Michael Sipser,
+  \emph{Introduction to the Theory of Computation},
+  ISBN 0-534-94728-X.
+  (Theorem 1.22, section 1.2, pg. 59.)
+\end{thebibliography}
+
+\end{document}

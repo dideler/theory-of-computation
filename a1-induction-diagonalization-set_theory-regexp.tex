@@ -1,0 +1,210 @@
+\documentclass[10pt,a4paper,final]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\author{Dennis Ideler}
+\title{MATH/COSC 4P61: Theory of Computation\\Assignment 1}
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item % Q1
+Prove by induction that for $n \geq 4$ the statement $S(n) = n! > 2^n$ is true.\\
+\\
+Proof by induction has two steps: proving the base case and the inductive step.
+These two parts should convince us that $S(n)$ is true for every integer $n$
+that is equal to or greater than the basis integer $4$.\\
+\\
+\textbf{Step 1: Basis}\\ % Prove base case
+$S(4) = 4! > 2^4 = 24 > 16$.\\
+\\
+\textbf{Step 2: Induction}\\
+Inductive hypothesis: assume true for $k \geq 4$.\\
+If $S(k) = k! > 2^k$ then $S(k+1) = (k+1)! > 2^{k+1}$.\\
+Rewrite $S(k+1)$ so it can make use of $S(k)$.\\
+$S(k+1) = (k+1)\,k! > 2 \cdot 2^k$\\
+$S(n)$ tells us that $k! > 2^k$.
+If we remove that assumed truth from the above statement, we only need to show $k+1 > 2$.
+Since $n \geq 4$, we get $4 + 1 > 2$ which holds.\\
+\\
+$\therefore n! > 2^n$ for $n  \geq 4$.
+
+\item % Q2
+A function $f : N \rightarrow N$ is monotone-increasing if $f(i) < f(i+1) \: \forall \: i \in N$.\\
+Prove, using diagonalization, that the set of monotone-increasing functions is
+uncountable.\\
+\\
+%Say there is a table that enumerates all subsets for some assumed countable set.
+%Diagonalization is the trick of complementing the diagonal to construct a subset
+%that cannot be a subset that appears in any row of the table.
+%It works because the complement of the diagonal is itself a characteristic vector describing
+%membership in some set. This characteristic vector disagrees in some column with every row of the
+%suggested table.\\
+An uncountable set is an infinite set that contains too many elements to be countable
+(i.e. it is not enumerable).
+The uncountability of a set is closely related to its cardinal number:
+a set is uncountable if its cardinal number is larger than that of the set of all natural numbers.
+The set of natural numbers (and any other countably infinite set) has cardinality aleph-null
+($\aleph_0$).\\
+\\
+Technique of Diagonalization\\
+Step 1: Assume set is countable and enumerate all subsets\\
+Step 2: Create new subset utilizing elements from existing subsets\\
+Step 3: Show new subset is in set but not in enumeration\\
+\\
+1) We assume the set of all monotone-increasing functions is countable
+\begin{tabular}{c|c c c c c}
+& 1 & 2 & 3 & $\cdots$ & $i$ \\
+\hline
+$f_1$ & \textbf{1} & 2 & 3 & $\cdots$\\
+$f_2$ & 2 & \textbf{4} & 6 & $\cdots$\\
+$f_3$ & 3 & 5 & \textbf{7} & $\cdots$\\
+$\vdots$\\
+$f_i$\\
+\end{tabular}
+2) Create a new function $f(i) = 1 + f_i(i),\: f \neq f_i \: \forall \: i$.\\
+$f(1) = 1 + f_1(1) = 1 + 1 = 2\\
+f(2) = 1 + f_2(2) = 1 + 4 = 5\\
+f(3) = 1 + f_3(3) = 1 + 7 = 8\\
+\vdots$\\
+\\
+3) $f(i) \in N$ but not in enumeration (differs in some column with every row).\\
+$\therefore$ the set of monotone-increasing functions is uncountably infinite.
+
+\item % Q3
+Prove, using diagonalization, that the power set of natural numbers ($2^N$) is uncountable.\\
+\\
+Step 1: Assume $2^N$ is countable, enumerate all subsets\\
+Step 2: Create new subset utilizing existing subsets\\
+Step 3: Show new subset is in power set but not in enumeration\\
+\\
+1) We use binary representation for the subsets (easier to enumerate)
+\begin{tabular}{c|c c c c c}
+& 1 & 2 & 3 & $\cdots$ & $N$ \\
+\hline
+$S_1$ & \textbf{0} & 0 & 0 & $\cdots$\\
+$S_2$ & 1 & \textbf{1} & 1 & $\cdots$\\
+$S_3$ & 1 & 0 & \textbf{1} & $\cdots$\\
+$\vdots$\\
+$S_i$\\
+\end{tabular}\\
+2) Create a new subset $S(i) = 1-S_i(i), \: S \neq S_i \: \forall \: i$.\\
+$S(1) = 1 - S_1(1) = 1 - 0 = 1\\
+S(2) = 1 - S_2(2) = 1 - 1 = 0\\
+S(3) = 1 - S_3(3) = 1 - 1 = 0\\
+\vdots$\\
+\\
+3) $S(i) \in 2^N$ (since the power set contains all subsets of set $N$) but not in enumeration.\\
+$\therefore$ the power set of all natural numbers is uncountably infinite.
+
+\item % Q4
+We know the set of all functions $f:N \rightarrow \{0,1\}$ is uncountable.\\
+What about the set of all functions $f:\{0,1\} \rightarrow N$?\\
+\\
+This function has two cases: $f_i(0) \rightarrow N$ and $f_i(1) \rightarrow N$.\\
+We know that $|N| = \aleph_0$ which means the set of $N$ is countable.\\
+We know $f:\{0,1\} \rightarrow N$ is equivalent to
+$f:\{0\} \rightarrow N \, \bigcup \, f:\{1\} \rightarrow N$.\\
+The union of two countable sets results in a countable set, $N \bigcup N = N$.\\
+$\therefore$ the set of all functions $f:\{0,1\} \rightarrow N$ is countably infinite.
+
+% TODO
+\item % Q5
+One-to-one and onto functions:\\
+$A$ onto $B \Rightarrow$ every element in $B$ is mapped.\\
+$A$ 1-1 $B \Rightarrow$ no element in $B$ maps to more than one element in $A$.\\
+1-1 correspondence $\Rightarrow$ bijective (1-1 \emph{and} onto).
+\emph{i.e.} No two values map to the same value.
+For every element in the codomain, some element of the domain maps to it.\\
+Identity function $\Rightarrow$ input parameter is the same as the output value.\\
+\\
+Find functions $f:N \rightarrow N$ where $N = \{1,2,3,\dots\}$ that satisfy
+\begin{enumerate}
+  \item $f$ is 1-1 but not onto:\\
+  $f(x) = x + 2$\\
+  $f(1) = 3$\\
+  $f(2) = 4$\\
+  $f(3) = 5$\\
+  $f(4) = 6$\\
+  $f(5) = 7$\\
+  $f(6) = 8$\\
+  $\vdots$\\
+  \item $f$ is onto but not 1-1:\\
+  $f(x) = \lceil \frac{x}{2} \rceil$\\
+  $f(1) = 1$\\
+  $f(2) = 1$\\
+  $f(3) = 2$\\
+  $f(4) = 2$\\
+  $f(5) = 3$\\
+  $f(6) = 3$\\
+  $\vdots$\\
+  \item $f$ is a 1-1 correspondence and $f$ is not an identity function:\\
+  $f(x) = x - (x + 2 \: mod \: 3) + (x \: mod \: 3)$\\
+  $f(1) = 2$\\
+  $f(2) = 3$\\
+  $f(3) = 1$\\
+  $f(4) = 5$\\
+  $f(5) = 6$\\
+  $f(6) = 4$\\
+  $\vdots$\\
+  A conditional function would also work and would be more simple.
+\end{enumerate}
+
+\item % Q6
+Let $X = \{aa, bb\}$ and $Y = \{\epsilon, b, ab\}$.
+\begin{enumerate}
+  \item List the strings in the set $XY$.\\ % XY = X \cdot Y
+  $XY = X \cdot Y = \{aa, bb\}\{\epsilon, b, ab\}$
+  \begin{enumerate}
+    \item $aa \epsilon = aa$
+    \item $aa b$
+    \item $aa ab$
+    \item $bb \epsilon = bb$
+    \item $bb b$
+    \item $bb ab$
+  \end{enumerate}
+  \item List the strings of the set $Y^*$ of length three or less.\\
+  $Y^* = \{\epsilon, b, ab\}^*$ of length 3 or less.
+  \begin{enumerate}
+  	\item $|\epsilon| = 0$
+  	\item $|b| = 1$
+  	\item $|b b| = 2$
+  	\item $|b b b| = 3$
+  	\item $|ab| = 2$
+  	\item $|b ab| = 3$
+  	\item $|ab b| = 3$
+  \end{enumerate}
+  \item How many strings of length 6 are there in $X^*$?\\
+  $X^* = \{aa,bb\}^*$ of length 6\\
+  Each symbol has length 2, so there have to be 3 symbols in each string. $2^3 = 8$ strings.
+  \begin{enumerate}
+  	\item $000 \rightarrow aa aa aa$
+ 	\item $001 \rightarrow aa aa bb$
+  	\item $010 \rightarrow aa bb aa$
+  	\item $011 \rightarrow aa bb bb$
+  	\item $100 \rightarrow bb aa aa$
+  	\item $101 \rightarrow bb aa bb$
+  	\item $110 \rightarrow bb bb aa$
+  	\item $111 \rightarrow bb bb bb$
+  \end{enumerate}
+\end{enumerate}
+
+\item % Q7
+Let $L_1 = \{aaa\}^*$, $L_2 = \{a,b\}\{a,b\}\{a,b\}\{a,b\}$, and $L_3 = L_2^*$.
+Describe the strings that are in the languages
+\begin{enumerate}
+  \item $L_2 =$ strings of length 4 that are any combination of $a$'s and $b$'s.
+  \item $L_3 =$ closure of $L_2$, 0 or more occurrences of $L_2$.
+  i.e. empty string and strings that are a multiple of 4 with any combination of $a$'s and $b$'s.
+  E.g. $\epsilon$, $aaab$, $bbbbaaaa$, etc.
+  \item $L1 \bigcap L_3 =$ intersection of $L_1$ and $L_3$, which are strings of symbol $aaa$
+  that are multiples of 12. $L1 \bigcap L_3 = \{aaa\,aaa\,aaa\,aaa\}^*$
+\end{enumerate}
+\end{enumerate}
+\end{document}

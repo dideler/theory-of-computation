@@ -1,0 +1,223 @@
+% Copyright (C) 2011  Dennis Ideler (dennisideler.com)
+%    Permission is granted to copy, distribute and/or modify this document
+%    under the terms of the GNU Free Documentation License, Version 1.3
+%    or any later version published by the Free Software Foundation;
+%    with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+%    A copy of the license is included in the section entitled "GNU
+%    Free Documentation License" at http://www.gnu.org/copyleft/fdl.html
+
+\documentclass[10pt,a4paper,final]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{upgreek} % for /Upphi
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\author{Dennis Ideler}
+\title{MATH/COSC 4P61: Theory of Computation\\Assignment 4}
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item % Q1
+Construct a Turing Machine for $L = \{a^n b^n c^n | n \geq 1\}$. \\
+\\
+\begin{equation*}
+M = (Q, \Sigma, \Upgamma, \delta, q_0, B, F)
+\end{equation*}
+
+\begin{tabular}{c l}
+$Q:$ & finite set of states \\ 
+$\Sigma:$ & input alphabet \\ 
+$\Upgamma:$ & tape alphabet (contains $\Sigma$) \\
+$\delta:$ & transition function \\
+$q_0:$ & start state ($q_0 \in Q$) \\
+$B:$ & blank symbol\footnotemark[1] ($B \in \Upgamma - \Sigma$) \\
+$F:$ & set of final states ($F \subseteq Q$)
+\end{tabular} 
+\footnotetext[1]{All tape except for the input is blank initially.}
+
+\begin{equation*}
+\delta (q, Z) = (p, Y, D)
+\end{equation*}
+
+\begin{tabular}{c l}
+$q:$ & state in $Q$ \\ 
+$Z:$ & tape symbol in $\Upgamma$ \\ 
+$p:$ & state in $Q$ \\
+$Y:$ & new tape symbol in $\Upgamma$ \\
+$D:$ & direction (L or R)
+\end{tabular}
+
+Each transition function, the state changes from $q$ to $p$, $Z$ is replaced by $Y$ on tape,
+and the tape head moves one cell in the direction of $D$.
+
+\underline{Idea:} Keep matching $a$'s, $b$'s, and $c$'s one by one, moving the head back and forth
+along the tape. When all matchings are complete (in a legal string),
+the head moves to a final state and halts. \\
+\\
+Let $w$ be a string of input symbols.
+\begin{enumerate}
+  \item If $w \in L(M)$, $M$ accepts $w$, $M$ halts in final state
+  \item If $w \notin L(M)$, $M$ does not accept $w$,
+  \begin{enumerate}
+    \item $M$ halts on non-final state
+    \item $M$ never halts (infinite loop)
+  \end{enumerate}
+\end{enumerate}
+
+In pseudo-code, it would look something like this:
+\begin{verbatim}
+1. if you see an a, change it to X, and move R
+   if you see a Y (no more a's), keep going R until B (final state)
+2. keep going R until you see leftmost b, change it to Y, and move R
+3. keep going R until you see leftmost c, change it to Z, and move L
+4. keep going L until you see leftmost X, move R, go to step 1
+\end{verbatim}
+
+\begin{table}[h!] % add table because tabular environment is not a float by default (i.e. can be broken)
+\begin{center}
+\begin{tabular}{c| c c c c c c c}
+$\delta$ & a        & b           & c           & X           & Y           & Z            & B \\
+\hline
+$q_0$ & $(q_1,X,R)$ & ---         & ---         & ---         & $(q_4,Y,R)$ & ---          & --- \\
+$q_1$ & $(q_1,a,R)$ & $(q_2,Y,R)$ & ---         & ---         & $(q_1,Y,R)$ & ---          & --- \\
+$q_2$ & ---         & $(q_2,b,R)$ & $(q_3,Z,L)$ & ---         & ---         & $(q_2,Z,R)$  & --- \\
+$q_3$ & $(q_3,a,L)$ & $(q_3,b,L)$ & ---         & $(q_0,X,R)$ & $(q_3,Y,L)$ & $(q_3,Z,L)$  & --- \\
+$q_4$ & ---         & ---         & ---         & ---         & $(q_4,Y,R)$ & $(q_4,Z,R)$  & $(q_f,B,R)$ \\
+\hline
+$q_f$ & ---         & ---         & ---         & ---         & ---         & ---          & ---
+\end{tabular}
+\end{center}
+\caption{A Turing machine to accept $\{a^n b^n c^n | n \geq 1\}$}
+\end{table}
+
+$Q$ consists of
+\begin{tabular}{c l}
+$q_0:$ & change $a$'s to $X$ \\
+$q_1:$ & change $b$'s to $Y$ \\
+$q_2:$ & change $c$'s to $Z$ \\
+$q_3:$ & backtrack the tape head to start a new round of matching \\
+$q_4:$ & matching complete, go to end of input \\
+$q_f:$ & final state, machine halted and input accepted
+\end{tabular}
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+... & B & B & a & a & b & b & c & c & B & B & ... \\
+\hline
+... & B & B & X & a & b & b & c & c & B & B & ... \\
+\hline
+... & B & B & X & a & Y & b & c & c & B & B & ... \\
+\hline
+... & B & B & X & a & Y & b & Z & c & B & B & ... \\
+\hline
+... & B & B & X & X & Y & b & Z & c & B & B & ... \\
+\hline
+... & B & B & X & X & Y & Y & Z & c & B & B & ... \\
+\hline
+... & B & B & X & X & Y & Y & Z & Z & B & B & ... \\
+\hline
+\end{tabular}
+\end{center}
+\caption{An example of how the tape would change if $w = aabbcc$ (not showing states and skipping steps
+where a symbol is replaced by the same symbol)}
+\end{table}
+
+\item % Q2
+Let $ALL_{CGF} = \{<G> |\, G$ is a CFG and $L(G) = \Sigma^*\}$.
+It is known that this language is undecidable.
+Define $EQ_{CFG} = \{<G,H> |\, G$ and $H$ are CFG's and $L(G) = L(H)\}$.
+Show that $EQ_{CFG}$ is undecidable. \\
+\\
+We have to use reduction. Show we can solve $ALL_{CFG}$, then we can solve $EQ_{CFG}$.
+But $ALL_{CFG}$ is known to be unsolvable, so then $EQ_{CFG}$ is also unsolvable since
+$ALL_{CFG} \leq EQ_{CFG}$. $ALL_{CFG}$ reduces to $EQ_{CFG}$, so $EQ_{CFG}$ is at least as hard
+as $ALL_{CFG}$. \\
+\\
+\emph{TODO}
+
+\item % Q3
+Given $A = \{<M> |\, M$ is a finite automaton and $L(M) = \Phi\}$
+where $M$ is some encoding of the machine $M$. Is $A$ Turing-decidable? Prove your answer. \\
+\\
+\emph{TODO}
+
+\item % Q4
+If $L$ is a recursively enumerable language, what can you say about its complement?
+Is it recursive, recursively enumerable, or non-recursively enumerable? Prove your answer. \\
+\\
+There are two cases:
+\begin{enumerate}
+  \item $L$ is recursive
+  \item $L$ is not recursive
+\end{enumerate}
+If $L$ is recursive, then so is $\bar{L}$, because recursive languages are closed under complementation.
+That means it is Turing-decidable, thus there is a TM that can solve it
+(i.e. it will stop either by accepting or rejecting). \\
+\\
+If $L$ is not recursive (but it is recursively-enumerable)...\\
+Assume that recursively enumerable languages are closed under complement.
+Then $\bar{L}$ is recursively enumerable, which means it is Turing-recognizable.
+Thus there is a TM that will stop eventually on a final state if fed a legal string. 
+
+\begin{verbatim}
+                                 _ _
+L(M)    /--y--> Y                L(M)     /--y--> N
+    +-+/                              +=+/
+w-->|M|                           w-->|M|
+    +-+                               +-+
+\end{verbatim}
+W see, that's not the case because $M$ only needs to halt if $w \in L(M)$, it doesn't have
+to say ``No".
+In other words, assuming recursively enumerable languages are closed under complementation,
+then if $w \in L$, the TM that recognizes $\bar{L}$ should also accept $w$. But that TM
+only accepts $w \notin L$, so we have a contradiction.
+
+For reference, recursively enumerable languages are closed under the following properties:
+\begin{enumerate}
+  \item Kleene closure ($L^*$ of $L$)
+  \item concatenation ($L \cdot P$)
+  \item union ($L \cup P$)
+  \item intersection ($L \cap P$)
+\end{enumerate}
+Recursively languages are \underline{not} closed under:
+\begin{enumerate}
+  \item set difference ($L - P$)
+  \item complementation ($\bar{L}$ of $L$)
+\end{enumerate}
+Which means the resulting languages produced by those 2 properties are not \emph{guaranteed} to be
+recursively enumerable.
+
+\item % Q5
+Let $M$ be a deterministic Turing maching that accepts a non-recursive language.
+Prove that the halting problem for $M$ is undecidable.
+That is, there is no TM that takes input $w$ and determines whether the computation of $M$ halts with
+with input $w$. \\
+\\
+If the halting problem for $M$ was decidable, then there would be a general TM (or algorithm)
+that given a description of a computer computer (or better yet, a non-recursive language among a set
+of uncountable ones) that decides whether the program finishes running or continues to run forever.
+
+Alan Turing proved in 1936 that such a general algorithm to solve the halting problem for \emph{all}
+possible program-input pairs cannot exist.
+
+We know that the number of TM's is countable, but the number of languages is uncountable
+(because there is an uncountable number of non-recursively enumerable languages). So
+some problems are unsolvable (i.e. not decidable).
+
+We can use the technique of diagonalization. Assume that our TM can decide on the halting problem
+for any arbitrary $w$ and $M$. So we can enumerate for every program-input pair the decision (yes or no). But we can show that there are programs that are not in our enumeration (and it makes sense because
+$M$ is from an uncountably number of non-recursively enumerable languages).
+
+So we have a program that doesn't appear in our enumeration but it should. Our contradiction means
+that the halting problem for $M$ is undecidable.
+\end{enumerate}
+
+\end{document}

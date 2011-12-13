@@ -24,17 +24,18 @@
 
 \begin{enumerate}
 \item % Q1
-Find context-free grammars\footnote{Context-free grammars are important in computer science
-for describing the structure of programming languages and other artificial languages.}
+Find context-free grammars\footnote{Context-free grammar is a notation for describing languages.
+They are important in computer science for describing the structure of programming languages and other artificial languages.}
 (CFG's) for the following languages:
 \begin{enumerate}
   \item % a
-  The set of all production rules for CFG's with $T = \Sigma = \{a,b\}$ and $V = \{A,B,C\}$.
+  The set of all production rules for CFG's with $T = \Sigma = \{a,b\}$ and $V = \{A,B,C\}$. \\
+  \\
+  It will be a CFG that generates another CFG.
   \begin{eqnarray*}
-  S &\rightarrow& A \,|\, B \,|\, C \\
-  A &\rightarrow& aA \,|\, aB \,|\, \epsilon \\ % aB and bA not necessary, but is it wrong to include?
-  B &\rightarrow& bB \,|\, bA \,|\, \epsilon \\
-  C &\rightarrow& aC \,|\, bC \,|\, \epsilon
+  S &\rightarrow& X \underline{\rightarrow} Y \\
+  X &\rightarrow& A \,|\, B \,|\, C \\
+  Y &\rightarrow& aY \,|\, bY \,|\, AY \,|\, BY \,|\, CY \,|\, \epsilon
   \end{eqnarray*}
   
   \item % b

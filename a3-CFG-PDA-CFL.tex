@@ -334,11 +334,11 @@ If CFL, give a PDA or CFG. If not CFL, show with pumping lemma.
   we know from class that those two are CFL, so under union they should also be.
   We can give a CFG, where $AB$ is for $i > j$, and $CD$ is for $i < j$.
   \begin{align*}
-    S &\Rightarrow AB \,|\, CD \\
-    A &\Rightarrow aA \,|\, a \\
-    B &\Rightarrow aBb \,|\, ab \\
-    C &\Rightarrow aCb \,|\, ab \\
-    D &\Rightarrow bD \,|\, b
+    S &\rightarrow& AB \,|\, CD \\
+    A &\rightarrow& aA \,|\, a \\
+    B &\rightarrow& aBb \,|\, ab \\
+    C &\rightarrow& aCb \,|\, ab \\
+    D &\rightarrow& bD \,|\, b
   \end{align*}
   
   \item % d
@@ -352,18 +352,12 @@ If CFL, give a PDA or CFG. If not CFL, show with pumping lemma.
   \item % e
   $\{a^n ww^R a^n | n \geq 0, w \in \{a,b\}^*\}$ \\
   \\
-  This one is tricky. PDA's exist for $\{a^n a^n | n \geq 0\}$ and $\{ww^R | w \in \{a,b\}^*\}$
-  (we can accept on empty stack for both with non-deterministic PDA), so you would expect this
-  language (which is a combination of the two) to also have a PDA and thus be CFL. But first
-  we try to disprove with pumping lemma, and if not successful, we try to prove with PDA or CFG.
+  Intuition says it is CFL because PDA's exist for $\{a^n a^n | n \geq 0\}$ and $\{ww^R | w \in \{a,b\}^*\}$
+  (we can accept on empty stack for both with non-deterministic PDA). This language is a combination of the
+  two (a palindrome that may have a's at the beginning and end) so it most likely has a PDA or CFG, and thus is CFL.
+  Easier to prove using CFG than PDA, so we get:
   \begin{align*}
-    \mbox{Let } z &= a^n b^m b^m a^n \\
-    &= u v^i w x^i y \\
-    |vwx| \leq n \\
-    |vx| \geq 1 \\
-    v,x \mbox{ contains } a's: \\
-    \overbrace{\underbrace{a \cdots a}_{uvwxy}}^{n} \overbrace{b \cdots b}^{m} \overbrace{b \cdots b}^{m} \overbrace{a \cdots a}^{n} \\
-    u v^i w x^i y \notin L \mbox{ if } i \geq 2
+    S &\rightarrow& aSa \,|\, bSb \,|\, \epsilon
   \end{align*}
 \end{enumerate}
 

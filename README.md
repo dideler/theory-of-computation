@@ -33,5 +33,8 @@ Computability is relevant to the philosophy of mathematics and, in particular, t
 * What is infinity?
 * What is computable, and similarly, what is unsolvable?
 
+Extras
+------
+Cheat sheet available on OpenCSC: https://github.com/BrockCSC/cheat-sheets
 
 Disclaimer: I cannot guarantee that these solutions are correct, use at your own risk.
